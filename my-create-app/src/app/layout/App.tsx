@@ -1,22 +1,23 @@
-import React, { useState,useEffect, Fragment, SyntheticEvent, useContext} from 'react';
-import { Header, Icon, Container } from 'semantic-ui-react';
-import { List } from 'semantic-ui-react'
+import React, {useEffect, Fragment, useContext} from 'react';
+
 //import {v4 as uuid} from 'uuid';
 //import axios from 'axios';
 //import { IActivity } from '../../models/activity';
 import { NavBar } from '../../features/nav/NavBar';
 import ActivityDashBoard from '../../features/activities/dashboard/ActivityDashBoard';
-import { RadioButtons } from '../../features/activities/dashboard/radiobuttons/RadioButtons';
-import { DropdownExample } from '../../features/activities/dashboard/dropdowns/DropdownExample';
-import ActivityList  from '../../features/activities/dashboard/ActivityList';
 //import Activities  from '../api/agent';
 import { LoadingComponent } from './LoadingComponent';
 import ActivityStore from '../stores/activityStore';
 import {observer} from 'mobx-react-lite';
+import { HomePage } from '../../features/Home/HomePage';
+import { Route,withRouter, RouteComponentProps } from 'react-router-dom';
+import ActivityForm from '../../features/form/ActivityForm';
+import  ActivityDetails  from '../../features/details/ActivityDetails';
+import { Container } from 'semantic-ui-react';
 
-const App = ()=> {
+const App:React.FC<RouteComponentProps>= ({location})=> {
 
-  const activityStore= useContext(ActivityStore);
+
   // const [activities,setActivities]=useState<IActivity[]>([]);
   // const [selectedActivity, setSelectedActivity]=useState<IActivity | null>(null);
   // const [CityActivities, setSelectedActivitiesByCity]=useState<IActivity[]>([]);
@@ -79,38 +80,42 @@ const App = ()=> {
 //   }).then(()=>setSubmitting(false));
 // }
 
-  useEffect(()=>{
-    activityStore.loadActivities();
-  },[activityStore]);
 
-  //[] is used to prevent the component from rerendering
-
-  if(activityStore.loadingInitial) return <LoadingComponent content='Loading activities...'/>
     return (
       <Fragment>
-       <NavBar/>
-       <Container style={{marginTop:'7em'}}>
-        <ActivityDashBoard 
-            // activities={activityStore.activities} 
-            // //selectActivity={handleSelectActivity} 
-            // setEditMode={setEditMode}
-            // //setSelectedActivity={setSelectedActivity}
-            // //createActivity={handleCreateActivity}
-            // //editActivity={handleEditActivity}
-            // deleteActivity={HandledeleteActivity}
-            // submitting={submitting}
-            // target={target}
-            />           
-            {/* <RadioButtons state={state!} city={city!} selectState={handleSetState} selectCity={handleSetCity} /> */}
-            <br/>
-            {/* <DropdownExample city={city!}/> */}
-           {/* {city!=null && <ActivityList activities={CityActivities} selectActivity={handleSelectActivity} />} */}
-           
-       </Container>
+          <Route exact path='/' component={HomePage}/>
+          <Route path={'/(.+)'} render={()=>(
+
+              <Fragment>
+
+              <NavBar/>
+              <Container style={{marginTop:'7em'}}>                
+                <Route exact path='/activities' component={ActivityDashBoard}/>
+                <Route path='/activities/:id' component={ActivityDetails}/>
+                <Route key={location.key} path={['/createActivity','/manage/:id']} component={ActivityForm}/>
+                
+                {/* <ActivityDashBoard 
+                    // activities={activityStore.activities} 
+                    // //selectActivity={handleSelectActivity} 
+                    // setEditMode={setEditMode}
+                    // //setSelectedActivity={setSelectedActivity}
+                    // //createActivity={handleCreateActivity}
+                    // //editActivity={handleEditActivity}
+                    // deleteActivity={HandledeleteActivity}
+                    // submitting={submitting}
+                    // target={target}
+                    />            */}
+                    {/* <RadioButtons state={state!} city={city!} selectState={handleSetState} selectCity={handleSetCity} /> */}
+                    <br/>
+                    {/* <DropdownExample city={city!}/> */}
+                  {/* {city!=null && <ActivityList activities={CityActivities} selectActivity={handleSelectActivity} />} */}
+                  
+              </Container>
+              </Fragment>
+          )}/>
+
       </Fragment>
     );
-  
-
 }
 
-export default observer(App);
+export default  withRouter(observer(App));

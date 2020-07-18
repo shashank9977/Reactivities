@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Card, Image, Button } from 'semantic-ui-react';
-import { IActivity } from '../../models/activity';
 import { observer } from 'mobx-react-lite';
 import ActivityStore from '../../app/stores/activityStore';
+import { RouteComponentProps, Link } from 'react-router-dom';
+import { LoadingComponent } from '../../app/layout/LoadingComponent';
 
 //  interface Iprops{
 //     activity:IActivity|undefined;
@@ -10,11 +11,22 @@ import ActivityStore from '../../app/stores/activityStore';
 //     //setSelectedActivity:(activity:IActivity|null)=>void;
 // }
 
+interface DetailParams{
+    id:string
+}
 
-export const ActivityDetails:React.FC = () => {
-
+ const ActivityDetails:React.FC<RouteComponentProps<DetailParams>> = ({match,history}) => {
+    console.log("here");
+    
     const activityStore= useContext(ActivityStore);
-    const {selectedActivity:activity,openEditForm,cancelSelectedActivity}=activityStore;
+    const {activity,loadActivity,loadingInitial}=activityStore;
+
+    useEffect(() => {
+        loadActivity(match.params.id)
+    },[loadActivity,match.params.id]);
+
+    //console.log(activity);
+    if(loadingInitial || !activity) return <LoadingComponent content="Loading Activity.."/>
 
     return (
         <div>
@@ -31,8 +43,8 @@ export const ActivityDetails:React.FC = () => {
                 </Card.Content>
                 <Card.Content extra>
                     <Button.Group width={2}>
-                        <Button basic color='blue' content='Edit' onClick={()=>openEditForm(activity!.id)}/>
-                        <Button basic color='grey' content='Cancel' onClick={cancelSelectedActivity} />
+                        <Button as={Link} to={`/manage/${activity.id}` } basic color='blue' content='Edit'/>
+                        <Button basic color='grey' content='Cancel' onClick={()=>history.push('/activities')} />
                     </Button.Group>
                 </Card.Content>
             </Card>

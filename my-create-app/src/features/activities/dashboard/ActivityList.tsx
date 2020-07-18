@@ -1,25 +1,17 @@
-import React, { SyntheticEvent, useContext } from 'react'
-import { Item, Image, Button, Label, Segment } from 'semantic-ui-react'
-import { IActivity } from '../../../models/activity'
+import React, { useContext } from 'react'
+import { Item, Button, Label, Segment } from 'semantic-ui-react'
 import { observer } from 'mobx-react-lite'
 import ActivityStore from '../../../app/stores/activityStore';
+import { Link } from 'react-router-dom';
 
-interface IProps{
-    //activities:IActivity[];
-    //selectActivity:(id:string)=>void,
-  //  deleteActivity:(event:SyntheticEvent<HTMLButtonElement>,id:string)=>void;
-  //  submitting:boolean;
- //   target:string;
-    
-}
+
 
  const ActivityList:React.FC = () => {
    
    
     const activityStore= useContext(ActivityStore);
-    const {activitiesByDate,selectActivity,selectedActivity:activity, deleteActivity,submitting,target} =activityStore;
+    const {activitiesByDate, deleteActivity,submitting,target} =activityStore;
 
-    console.log(target);
     return (
         <div>
             <Segment clearing>
@@ -41,7 +33,7 @@ interface IProps{
                                         floated="right" 
                                         content='delete'
                                         color='red' ></Button>
-                                        <Button onClick={()=>selectActivity(activity.id)} 
+                                        <Button as= {Link} to={`activities/${activity.id}`} 
                                         floated="right" 
                                         content='View'
                                         color='blue' ></Button>
