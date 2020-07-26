@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, useContext, useEffect } from 'react'
-import { Segment, Form, Button } from 'semantic-ui-react';
+import { Segment, Form, Button, GridColumn, Grid } from 'semantic-ui-react';
 import { IActivity } from '../../models/activity';
 import {v4 as uuid} from 'uuid';
 import ActivityStore from '../../app/stores/activityStore';
@@ -83,7 +83,10 @@ interface DetailParams{
     };
   
     return (
-      <Segment clearing>
+
+      <Grid>
+        <GridColumn width={10}>
+        <Segment clearing>
         <Form onSubmit={handleSubmit}>
           <Form.Input
             onChange={handleInputChange}
@@ -131,7 +134,10 @@ interface DetailParams{
             content='Cancel'
           />
         </Form>
-      </Segment>
+          </Segment>
+        </GridColumn>
+      </Grid>
+
     );
   };
 
